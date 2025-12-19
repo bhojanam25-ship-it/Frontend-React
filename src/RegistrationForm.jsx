@@ -3,13 +3,13 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { registerUser } from "./Store.js";
-import { ToastContainer, toast } from "react-toastify";
+import { registerUser } from "./Store.js"; // your thunk
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function Registration() {
+function RegistrationForm() {
   const navigate = useNavigate();
-  const dispatch = useDispatch(); // ✅ Must call useDispatch() here
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -20,13 +20,19 @@ function Registration() {
 
   const onSubmit = async (data) => {
     try {
-      const result = await dispatch(registerUser(data)).unwrap(); // ✅ unwrap gives success/error
+      const result = await dispatch(registerUser(data));
 
-      toast.success("Registration successful! 🎉");
-      reset();
-      navigate("/login"); // ✅ Navigate to login after successful registration
-    } catch (err) {
-      toast.error(err || "Registration failed ❌");
+      // Check if thunk fulfilled
+      if (registerUser.fulfilled.match(result)) {
+        toast.success("Registration successful!");
+        reset();
+        navigate("/login");
+      } else {
+        toast.error(result.payload || "Registration failed");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Try again.");
+      console.error(error);
     }
   };
 
@@ -72,13 +78,25 @@ function Registration() {
             {errors.password && <div className="invalid-feedback">Password is required</div>}
           </div>
 
+          {/* PHONE */}
+          <div className="mb-3">
+            <label className="form-label fw-bold">Phone</label>
+            <input
+              type="text"
+              className={`form-control ${errors.phone ? "is-invalid" : ""}`}
+              placeholder="Enter phone number"
+              {...register("phone", { required: true })}
+            />
+            {errors.phone && <div className="invalid-feedback">Phone is required</div>}
+          </div>
+
           {/* SUBMIT BUTTON */}
           <button type="submit" className="btn btn-primary w-100 py-2">
             Register
           </button>
         </form>
 
-        {/* LOGIN BUTTON */}
+        {/* NAVIGATE TO LOGIN */}
         <button
           className="btn w-100 mt-3 py-2 text-white"
           style={{
@@ -91,12 +109,11 @@ function Registration() {
         >
           Login
         </button>
-
       </div>
 
-      <ToastContainer position="top-right" autoClose={3000} />
+      {/* <ToastContainer /> */}
     </div>
   );
 }
 
-export default Registration;
+export default RegistrationForm;
