@@ -22,16 +22,20 @@ function Login() {
 
   // ---------------- LOGIN ----------------
   const submitLogin = (data) => {
-    dispatch(LoginUser(data))
-      .unwrap()
-      .then(() => {
-        toast.success("Login Successful 🔐");
-        reset();
-        navigate("/Home");
-      })
-      .catch(() => {
-        toast.error("Invalid Email or Password");
-      });
+   dispatch(LoginUser(data))
+  .unwrap()
+  .then((res) => {
+    toast.success("Login Successful 🔐");
+
+    // 🔐 wait for token
+    if (res?.token) {
+      navigate("/Home");
+    }
+  })
+  .catch(() => {
+    toast.error("Invalid Email or Password");
+  });
+
   };
 
   // ---------------- LOGOUT ----------------
