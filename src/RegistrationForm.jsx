@@ -1,13 +1,15 @@
+// src/RegistrationForm.jsx
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux"; // ✅ Import
-import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
 import { registerUser } from "./Store.js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Registration() {
   const navigate = useNavigate();
-  const dispatch = useDispatch(); // ✅ Get dispatch function
+  const dispatch = useDispatch(); // ✅ Must call useDispatch() here
 
   const {
     register,
@@ -18,12 +20,13 @@ function Registration() {
 
   const onSubmit = async (data) => {
     try {
-      const result = await dispatch(registerUser(data)).unwrap(); // ✅ Correct
-      toast.success("Registration successful!");
+      const result = await dispatch(registerUser(data)).unwrap(); // ✅ unwrap gives success/error
+
+      toast.success("Registration successful! 🎉");
       reset();
-      navigate("/login");
+      navigate("/login"); // ✅ Navigate to login after successful registration
     } catch (err) {
-      toast.error(err || "Registration failed");
+      toast.error(err || "Registration failed ❌");
     }
   };
 
@@ -69,11 +72,13 @@ function Registration() {
             {errors.password && <div className="invalid-feedback">Password is required</div>}
           </div>
 
+          {/* SUBMIT BUTTON */}
           <button type="submit" className="btn btn-primary w-100 py-2">
             Register
           </button>
         </form>
 
+        {/* LOGIN BUTTON */}
         <button
           className="btn w-100 mt-3 py-2 text-white"
           style={{
@@ -86,7 +91,10 @@ function Registration() {
         >
           Login
         </button>
+
       </div>
+
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }
