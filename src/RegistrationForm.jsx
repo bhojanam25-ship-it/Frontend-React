@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";   // ✅ Added
 import "./RegistrationForm.jsx";   // ❗ Corrected
 import { registerUser } from "./Store.js";
+import { useDispatch } from "react-redux";
 
 function Registration() {
   const navigate = useNavigate();   // ✅ Added
@@ -16,7 +17,7 @@ function Registration() {
   } = useForm();
 
   const onSubmit = async (data) => {
-  const result = await dispatch(registerUser(data));
+  const result = await useDispatch(registerUser(data));
   if (registerUser.fulfilled.match(result)) {
     toast.success("Registration successful!");
     navigate("/login");
