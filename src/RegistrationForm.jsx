@@ -3,6 +3,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";   // ✅ Added
 import "./RegistrationForm.jsx";   // ❗ Corrected
+import { registerUser } from "./Store.js";
 
 function Registration() {
   const navigate = useNavigate();   // ✅ Added
@@ -14,11 +15,16 @@ function Registration() {
     reset,
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    alert("Registration successful!");
-    reset();
-  };
+  const onSubmit = async (data) => {
+  const result = await dispatch(registerUser(data));
+  if (registerUser.fulfilled.match(result)) {
+    toast.success("Registration successful!");
+    navigate("/login");
+  } else {
+    toast.error(result.payload || "Registration failed");
+  }
+};
+
 
   return (
     <div className="container mt-5">
