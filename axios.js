@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api= axios.create({
-  baseURL: "https://backend-express-two-fawn.vercel.app",
+  baseURL: "https://backend-express-two-fawn.vercel.app/api/v1/products",
 });
 
 // ----- Add Token Automatically -----
